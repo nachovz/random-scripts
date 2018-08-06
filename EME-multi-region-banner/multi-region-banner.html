@@ -1,108 +1,180 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-	<link rel="stylesheet" type="text/css" href="multi-region-banner.css">
-</head>
-<body>
-
 <script type="text/javascript">
-
 	try{
-		const search = location.search.substring(1);
-		if (search != "") {
-			var config = JSON.parse('{"' + decodeURI(search.replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}');
+		
+		Promise.all([
+		  fetch("//mx.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed").then((response) => response.json()),
+		  fetch("//uy.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed").then((response) => response.json()),
+		  fetch("//ve.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed").then((response) => response.json())
+		]).then(allResponses => {
+			/*const mxPosts = allResponses[0];
+			const uyPosts = allResponses[1];
+			const vePosts = allResponses[2];
+			*/
+			const countries = ["Mexico", "Uruguay", "Venezuela"];
+			var div = document.getElementById('content-loader'); 
 			
-            let widget_size = '';
-			widget_size = config["size"];
-            var country_name = '';
-			if ( config.hasOwnProperty("country") ){
-				country_name = config["country"];
-			} else {
-				country_name = 'us';
-			}
-
-			var splitpath = location.pathname.split( '/' );
-			var c = document.createElement("link");
-		    c.type = "text/css";
-		    c.rel = "stylesheet";
-		    c.media = "screen";
-		    c.href = location.protocol+"//"+location.host+"/"+splitpath[1]+"/"+splitpath[2]+"/"+widget_size+".css";
-			document.getElementsByTagName("head")[0].appendChild(c);
-
-			var request = new XMLHttpRequest();
-		//	request.open('GET', location.protocol+'//tags.emedemujer.com/widget_ad/V4/feeds/feed_'+country_name+'.json', true);
-            request.open('GET', 'http://mx.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed', true);
-            //var div = document.getElementById('content-loader');
-            
-			request.onload = function() {
-			   var div = document.getElementById('content-loader'); 
-			    
-			  if (request.status >= 200 && request.status < 400) {
-
-			    // Success!
-			    var data = JSON.parse(request.responseText);
-
-			    if (data.length>0){
-
-				    let number_of_widgets = 3;
-				    
-				    if ((widget_size=='160x600')||(widget_size=='960x300')){
-				    	number_of_widgets = 3;
-				    } else if (widget_size=='300x250'){
-				    	number_of_widgets = 1;
-				    } else if (widget_size=='728x90'){
-				    	number_of_widgets = 8;
-				    } else if (widget_size=='930x90'){
-				    	number_of_widgets = 11;
-				    }
-
-				    var click_macro = "";
-				    if( config.hasOwnProperty( "click_macro" ) ) {
-			    		click_macro += config["click_macro"];
+			//if (mxPosts.length>0 && uyPosts.length>0 && vePosts.length>0){
+			if (allResponses.length>0){
+				
+				div.innerHTML = '';
+				let theContent = '';
+			
+			    for (var i = 0; i < 3; i++) {
+			
+			    	let widget = allResponses[i][0];
+			
+			    	if (widget!=undefined){
+				    	//div.innerHTML += '<div class="fdrd-entryDiv"><div class="fdrd-entryBodyDiv"><a href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_campaign=recolector_widget_image" target="_blank"><img src="'+widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"].source_url+'"></a><div class="fdrd-entryTitleDiv"><a class="fdrd-entryTitleLink" href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_campaign=recolector_widget_title" target="_blank">'+widget["title"].rendered+'</a></div></div></div>';
+				    	theContent += '<article class="grid-4 post type-post status-publish format-standard has-post-thumbnail hentry category-trending post-item post-even">';
+							theContent += '<div class="post-item-inner">';
+								theContent += '<div class="entry-image inview">';
+			    					theContent += '<div class="entry-image-inner">';
+			    						theContent += '<a href="'+widget["link"]+'?utm_source=network&utm_medium=home_network&utm_campaign=home_crossed_traffic" title="'+widget["title"].rendered+'">'; 
+			    							theContent += '<img width="333" height="247" src="'+(widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"] || widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["medium"]).source_url+'" class="attachment-rectangle-size size-rectangle-size wp-post-image" alt="'+widget["title"].rendered+'" />'; 
+			    						theContent += '</a>';
+			        				theContent += '</div>';
+			    				theContent += '</div>';
+			    				theContent += '<div class="entry-details">';
+				                    theContent += '<header class="entry-header" >';
+				                        theContent += '<div class="entry-meta">'; 
+				                        	theContent += '<span class="entry-category">'; 
+				                        		theContent += '<a href="'+widget["link"]+'" rel="category tag">';
+				                        			theContent += countries[i];
+				                        		theContent += '</a>'; 
+				                        	theContent += '</span>';
+				                        theContent += '</div>';
+				                        theContent += '<h2 class="entry-title">'; 
+				                        	theContent += '<a href="'+widget["link"]+'" rel="bookmark">';
+				                        		theContent += widget["title"].rendered;
+				                        	theContent += '</a>';
+				                        theContent += '</h2>';
+				                    theContent += '</header>';
+				                    theContent += '<div class="entry-summary">';
+				                    	theContent += widget["excerpt"].rendered;
+				                    theContent += '</div>';
+				                theContent += '</div>';
+				            theContent += '</div>';
+				        theContent += '</article>';
+			    		
 			    	}
-
-				    div.innerHTML = '<div class="fdrd-channelTitleDiv"><img src="http://us.emedemujer.com/wp-content/uploads/2015/02/logo-eme-de-mujer.png" class="fdrd-channelLogo"></div>';
-
-				    for (var i = 0; i < number_of_widgets; i++) {
-
-				    	let widget = data[i];
-
-				    	if (widget!=undefined){
-					    	div.innerHTML += '<div class="fdrd-entryDiv"><div class="fdrd-entryBodyDiv"><a href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_content='+widget_size+'&utm_campaign=recolector_widget_image&'+click_macro+'" target="_blank"><img src="'+widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"].source_url+'"></a><div class="fdrd-entryTitleDiv"><a class="fdrd-entryTitleLink" href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_content='+widget_size+'&utm_campaign=recolector_widget_title&'+click_macro+'" target="_blank">'+widget["title"].rendered+'</a></div></div></div>';
-					    }
-
-					}
-
-				} else {
-					//div = document.getElementById('content-loader');
-					div.innerHTML = 'No se encontraron anuncios';
-				}
-
-			  } else {
-			    //div = document.getElementById('content-loader');
-				div.innerHTML = 'Hubo un error';
-			  }
-			};
-
-			request.onerror = function() {
-				var div = document.getElementById('content-loader');
-				div.innerHTML = 'Hubo un error';
-			};
-
-			request.send();
-
 			
-		}else{
-			console.log("No parameters.");
+				}
+				
+				let parPar = div.parentElement.parentElement;
+				
+				parPar.className = parPar.className.replace(/advertising/g, "featured-posts");
+				parPar.className = parPar.className.replace(/wrapper/g, "full-width-section bg-000000 text-ffffff links-ffffff");
+				
+				div.innerHTML = theContent;
+			
+			} else {
+				//div = document.getElementById('content-loader');
+				div.innerHTML = 'No se encontraron anuncios';
+			}
+		});
+		/*
+		var request = new XMLHttpRequest();
+        request.open('GET', '//mx.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed', true);
+        
+		request.onload = function() {
+		var div = document.getElementById('content-loader'); 
+		    
+		if (request.status >= 200 && request.status < 400) {
+		
+		// Success!
+		var data = JSON.parse(request.responseText);
+		
+		if (data.length>0){
+			
+			div.innerHTML = '';
+			let theContent = '';
+		
+		    for (var i = 0; i < 3; i++) {
+		
+		    	let widget = data[i];
+		
+		    	if (widget!=undefined){
+			    	//div.innerHTML += '<div class="fdrd-entryDiv"><div class="fdrd-entryBodyDiv"><a href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_campaign=recolector_widget_image" target="_blank"><img src="'+widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"].source_url+'"></a><div class="fdrd-entryTitleDiv"><a class="fdrd-entryTitleLink" href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_campaign=recolector_widget_title" target="_blank">'+widget["title"].rendered+'</a></div></div></div>';
+			    	theContent += '<article class="grid-4 post type-post status-publish format-standard has-post-thumbnail hentry category-trending post-item post-even">';
+						theContent += '<div class="post-item-inner">';
+							theContent += '<div class="entry-image inview">';
+		    					theContent += '<div class="entry-image-inner">';
+		    						theContent += '<a href="'+widget["link"]+'?utm_source=network&utm_medium=home_network&utm_campaign=home_crossed_traffic" title="'+widget["title"].rendered+'">'; 
+		    							theContent += '<img width="333" height="247" src="'+widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"].source_url+'" class="attachment-rectangle-size size-rectangle-size wp-post-image" alt="'+widget["title"].rendered+'" />'; 
+		    						theContent += '</a>';
+		        				theContent += '</div>';
+		    				theContent += '</div>';
+		    				theContent += '<div class="entry-details">';
+			                    theContent += '<header class="entry-header" style="height: 166px;">';
+			                        theContent += '<div class="entry-meta">'; 
+			                        	theContent += '<span class="entry-category">'; 
+			                        		theContent += '<a href="http://us.emedemujer.com/trending/" rel="category tag">';
+			                        			theContent += 'Trending';
+			                        		theContent += '</a>'; 
+			                        	theContent += '</span>';
+			                        theContent += '</div>';
+			                        theContent += '<h2 class="entry-title">'; 
+			                        	theContent += '<a href="http://us.emedemujer.com/trending/miley-cyrus-y-liam-hemsworth-rumores-relacion/" rel="bookmark">';
+			                        		theContent += widget["title"].rendered;
+			                        	theContent += '</a>';
+			                        theContent += '</h2>';
+			                    theContent += '</header>';
+			                    theContent += '<div class="entry-summary">';
+			                    	theContent += widget["excerpt"].rendered;
+			                    theContent += '</div>';
+			                    theContent += '<footer class="entry-footer">';
+			                        theContent += '<div class="social-sharing" data-permalink="http://us.emedemujer.com/trending/miley-cyrus-y-liam-hemsworth-rumores-relacion/">';
+			                            theContent += '<a class="share-item share-facebook" href="http://www.facebook.com/sharer.php?u=http://us.emedemujer.com/trending/miley-cyrus-y-liam-hemsworth-rumores-relacion/&amp;t=Miley Cyrus y Liam Hemsworth aclararon los rumores sobre su relación" target="blank"> <i class="icomoon-facebook"></i> </a>';
+			                            theContent += '<a class="share-item share-twitter" href="https://twitter.com/intent/tweet?original_referer=http://us.emedemujer.com/trending/miley-cyrus-y-liam-hemsworth-rumores-relacion/&amp;text=Miley Cyrus y Liam Hemsworth aclararon los rumores sobre su relación&amp;tw_p=tweetbutton&amp;url=http://us.emedemujer.com/trending/miley-cyrus-y-liam-hemsworth-rumores-relacion/" target="_blank"> <i class="icomoon-twitter"></i> </a>';
+			                            theContent += '<a data-pin-custom="true" class="share-item share-pinterest" href="//pinterest.com/pin/create/button/?url=http://us.emedemujer.com/trending/miley-cyrus-y-liam-hemsworth-rumores-relacion/&amp;media=http://us.emedemujer.com/wp-content/uploads/sites/3/2016/05/638c534f47019d3a9301d9ced9dfe2f2.jpg&amp;description=Miley Cyrus y Liam Hemsworth aclararon los rumores sobre su relación" target="_blank"> <i class="icomoon-pinterest"></i> </a>';				                        
+			                        theContent += '</div>';
+			                    theContent += '</footer>';
+			                theContent += '</div>';
+			            theContent += '</div>';
+			        theContent += '</article>';
+		    		
+		    	}
+		
+			}
+			
+			let parPar = div.parentElement.parentElement;
+			
+			parPar.className = parPar.className.replace(/advertising/g, "featured-posts");
+			parPar.className = parPar.className.replace(/wrapper/g, "full-width-section bg-000000 text-ffffff links-ffffff");
+			
+			div.innerHTML = theContent;
+		
+		} else {
+			//div = document.getElementById('content-loader');
+			div.innerHTML = 'No se encontraron anuncios';
 		}
+		
+		} else {
+		//div = document.getElementById('content-loader');
+		div.innerHTML = 'Hubo un error';
+		}
+		};
+		
+		request.onerror = function() {
+		var div = document.getElementById('content-loader');
+		div.innerHTML = 'Hubo un error';
+		};
+		
+		request.send();
+		*/
 	}catch (e) {
 		console.log("Parse error " + e.message);
 	}
 
 </script>
 
-<div id="content-loader" class="fdrd-gallito">Cargando...</div>
-
-</body>
-</html>
+<div class="wrapper">
+	<header class="section-header">
+        <div class="section-title">
+            <h2 class="title">Otras regiones</h2>
+        </div>
+    </header>
+	<div class="grids grid-layout columns-size-3 entries" id="content-loader">
+		Cargando...
+	</div>
+</div>

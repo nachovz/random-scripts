@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fetch</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+            window.onload = () => {
+                fetch('https://wordpress-breathecode-cli-nachovz.c9users.io/wp-json/wc/v2/products?consumer_key=ck_a8d3575894faadb8136975b81a568b653cfc6bec&consumer_secret=cs_09a15f6bdd7deebc6ac428fecd56a5446a4b3220')
+                  .then(response => response.json())
+                  .then(data => data.forEach( (product) => console.log(product.name) ))
+                  .catch(error => console.log(error));
+            };
+        </script>
+    </body>
+</html>
