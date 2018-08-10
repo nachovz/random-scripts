@@ -1,23 +1,40 @@
 <script type="text/javascript">
+
+window.onload = () => {
+	const countries = [
+		{ 
+			url : "//mx.emedemujer.com/wp-json/wp/v2/posts?tags=16402&_embed",
+			country : "Mexico"
+		},{
+			url : "//uy.emedemujer.com/wp-json/wp/v2/posts?tags=14330&_embed",
+			country : "Uruguay"
+		},{
+			url : "//ve.emedemujer.com/wp-json/wp/v2/posts?tags=37826&_embed",
+			country : "Venezuela"
+		},{
+			url : "//us.emedemujer.com/wp-json/wp/v2/posts?tags=27446&_embed",
+			country : "United States"
+		}
+	];
+	
+	let region = window.location.hostname.substring(0, window.location.hostname.indexOf("."));
+	
+	let filtered = countries.filter( (item) => item.url.indexOf(region) < 0 );
+	
 	try{
 		
 		Promise.all([
-		  fetch("//mx.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed").then((response) => response.json()),
-		  fetch("//uy.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed").then((response) => response.json()),
-		  fetch("//ve.emedemujer.com/wp-json/wp/v2/posts?tags=71&_embed").then((response) => response.json())
+		  fetch(filtered[0].url).then((response) => response.json()),
+		  fetch(filtered[1].url).then((response) => response.json()),
+		  fetch(filtered[2].url).then((response) => response.json()),
+		  //fetch("//us.emedemujer.com/wp-json/wp/v2/posts?tags=27446&_embed").then((response) => response.json())
 		]).then(allResponses => {
-			/*const mxPosts = allResponses[0];
-			const uyPosts = allResponses[1];
-			const vePosts = allResponses[2];
-			*/
-			const countries = ["Mexico", "Uruguay", "Venezuela"];
-			var div = document.getElementById('content-loader'); 
 			
-			//if (mxPosts.length>0 && uyPosts.length>0 && vePosts.length>0){
+			var div = document.getElementById("content-loader"); 
 			if (allResponses.length>0){
 				
-				div.innerHTML = '';
-				let theContent = '';
+				div.innerHTML = "";
+				let theContent = "";
 			
 			    for (var i = 0; i < 3; i++) {
 			
@@ -25,36 +42,36 @@
 			
 			    	if (widget!=undefined){
 				    	//div.innerHTML += '<div class="fdrd-entryDiv"><div class="fdrd-entryBodyDiv"><a href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_campaign=recolector_widget_image" target="_blank"><img src="'+widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"].source_url+'"></a><div class="fdrd-entryTitleDiv"><a class="fdrd-entryTitleLink" href="'+widget["link"]+'?utm_source=Autopromo&utm_medium=referencia_entry&utm_campaign=recolector_widget_title" target="_blank">'+widget["title"].rendered+'</a></div></div></div>';
-				    	theContent += '<article class="grid-4 post type-post status-publish format-standard has-post-thumbnail hentry category-trending post-item post-even">';
-							theContent += '<div class="post-item-inner">';
-								theContent += '<div class="entry-image inview">';
-			    					theContent += '<div class="entry-image-inner">';
-			    						theContent += '<a href="'+widget["link"]+'?utm_source=network&utm_medium=home_network&utm_campaign=home_crossed_traffic" title="'+widget["title"].rendered+'">'; 
-			    							theContent += '<img width="333" height="247" src="'+(widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"] || widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["medium"]).source_url+'" class="attachment-rectangle-size size-rectangle-size wp-post-image" alt="'+widget["title"].rendered+'" />'; 
-			    						theContent += '</a>';
-			        				theContent += '</div>';
-			    				theContent += '</div>';
-			    				theContent += '<div class="entry-details">';
-				                    theContent += '<header class="entry-header" >';
-				                        theContent += '<div class="entry-meta">'; 
-				                        	theContent += '<span class="entry-category">'; 
-				                        		theContent += '<a href="'+widget["link"]+'" rel="category tag">';
-				                        			theContent += countries[i];
-				                        		theContent += '</a>'; 
-				                        	theContent += '</span>';
-				                        theContent += '</div>';
-				                        theContent += '<h2 class="entry-title">'; 
-				                        	theContent += '<a href="'+widget["link"]+'" rel="bookmark">';
+				    	theContent += "<article class=\"grid-4 post type-post status-publish format-standard has-post-thumbnail hentry category-trending post-item post-even\">";
+							theContent += "<div class=\"post-item-inner\">";
+								theContent += "<div class=\"entry-image inview\">";
+			    					theContent += "<div class=\"entry-image-inner\">";
+			    						theContent += "<a href=\""+widget["link"]+"?utm_source=network&utm_medium=home_network&utm_campaign=home_crossed_traffic\" title=\""+widget["title"].rendered+"\">"; 
+			    							theContent += "<img width=\"333\" height=\"247\" src=\""+(widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["post-small"] || widget._embedded["wp:featuredmedia"]["0"].media_details.sizes["medium"]).source_url+"\" class=\"attachment-rectangle-size size-rectangle-size wp-post-image\" alt=\""+widget["title"].rendered+"\" />"; 
+			    						theContent += "</a>";
+			        				theContent += "</div>";
+			    				theContent += "</div>";
+			    				theContent += "<div class=\"entry-details\">";
+				                    theContent += "<header class=\"entry-header\" >";
+				                        theContent += "<div class=\"entry-meta\">"; 
+				                        	theContent += "<span class=\"entry-category\">"; 
+				                        		theContent += "<a href=\""+widget["link"]+"\" rel=\"category tag\">";
+				                        			theContent += filtered[i].country;
+				                        		theContent += "</a>"; 
+				                        	theContent += "</span>";
+				                        theContent += "</div>";
+				                        theContent += "<h2 class=\"entry-title\">"; 
+				                        	theContent += "<a href=\""+widget["link"]+"\" rel=\"bookmark\">";
 				                        		theContent += widget["title"].rendered;
-				                        	theContent += '</a>';
-				                        theContent += '</h2>';
-				                    theContent += '</header>';
-				                    theContent += '<div class="entry-summary">';
+				                        	theContent += "</a>";
+				                        theContent += "</h2>";
+				                    theContent += "</header>";
+				                    theContent += "<div class=\"entry-summary\">";
 				                    	theContent += widget["excerpt"].rendered;
-				                    theContent += '</div>';
-				                theContent += '</div>';
-				            theContent += '</div>';
-				        theContent += '</article>';
+				                    theContent += "</div>";
+				                theContent += "</div>";
+				            theContent += "</div>";
+				        theContent += "</article>";
 			    		
 			    	}
 			
@@ -69,7 +86,7 @@
 			
 			} else {
 				//div = document.getElementById('content-loader');
-				div.innerHTML = 'No se encontraron anuncios';
+				div.innerHTML = "No se encontraron anuncios";
 			}
 		});
 		/*
@@ -165,13 +182,13 @@
 	}catch (e) {
 		console.log("Parse error " + e.message);
 	}
-
+}
 </script>
 
 <div class="wrapper">
 	<header class="section-header">
         <div class="section-title">
-            <h2 class="title">Otras regiones</h2>
+            <h2 class="title">Regionales</h2>
         </div>
     </header>
 	<div class="grids grid-layout columns-size-3 entries" id="content-loader">
