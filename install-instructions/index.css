@@ -1,0 +1,63 @@
+.w3-light-grey,.w3-hover-light-grey:hover,.w3-light-gray,.w3-hover-light-gray:hover{color:#000!important;background-color:#f1f1f1!important}
+.w3-green,.w3-hover-green:hover{color:#fff!important;background-color:#4CAF50!important}
+#footer{
+    display:none;
+}
+.steps{
+    min-height:390px;
+}
+.text-steps{
+    min-height:50px;
+}
+
+#Chrome{
+    left: 20px;
+    bottom:190px;
+}
+
+#Firefox{
+    top:0px;
+    right: 60px;
+}
+
+#InternetExplorer{
+    bottom: 190px;
+    right: 30%;
+}
+
+.ball{
+    position: fixed;
+    z-index: 99999;
+    opacity: 1;
+    display: none;
+    animation: bounce 0.5s;
+    animation-direction: alternate;
+    animation-timing-function: cubic-bezier(.5,0.05,1,.5);
+    animation-iteration-count: infinite;
+}
+
+@keyframes bounce {
+  from { transform: translate3d(0, 0, 0);     }
+  to   { transform: translate3d(0, 200px, 0); }
+}
+
+/* Prefix Support */
+ball {
+  -webkit-animation-name: bounce;
+  -webkit-animation-duration: 0.5s;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-timing-function: cubic-bezier(.5,0.05,1,.5);
+  -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes bounce {
+  from { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+  to   { -webkit-transform: translate3d(0, 200px, 0); transform: translate3d(0, 200px, 0); }
+}
+#main-menu{
+    display: none !important;
+}
+.manual-header{
+    height: 100px;
+    padding-top: 25px;
+}

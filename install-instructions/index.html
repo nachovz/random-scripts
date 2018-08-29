@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="index.css" type="text/css" />
+    </head>
+    <body>
+        <div class="w3-light-grey">
+          <div id="myBar" class="w3-container w3-green" style="height:24px;width:1%"></div>
+        </div>
+        
+        <script>
+        window.onload = function() {
+            var theBrowser = "";
+            var isIE;
+            // Firefox 1.0+
+            if( typeof InstallTrigger !== 'undefined') theBrowser = "Firefox";
+        
+            // Internet Explorer 6-11
+            if(/*@cc_on!@*/false || !!document.documentMode){ 
+                theBrowser = "InternetExplorer";
+                isIE = true;
+            }
+        
+            // Edge 20+
+            if(!isIE && !!window.StyleMedia) theBrowser = "InternetExplorer";
+        
+            // Chrome 1+
+            if(!!window.chrome && !!window.chrome.webstore) theBrowser = "Chrome";
+            
+            var elem = document.getElementById("myBar"); 
+            var width = 1;
+            var id = setInterval(frame, 60);
+            function frame() {
+                if (width >= 100) {
+                    clearInterval(id);
+                    document.getElementById(theBrowser).style.display = "block";
+                } else {
+                    width++; 
+                    elem.style.width = width + '%'; 
+                }
+            }
+        }
+        </script>
+        
+        <div class="directions_overlay ball" id="Chrome">
+            <img src="https://driverupdatepro.com/wp-content/uploads/2018/08/overlay_Chrome.png"/>
+        </div>
+        <div class="directions_overlay ball" id="InternetExplorer" >
+            <img src="https://driverupdatepro.com/wp-content/uploads/2018/08/overlay_E.png"/>
+        </div>
+        <div class="directions_overlay ball" id="Firefox" >
+            <img src="https://driverupdatepro.com/wp-content/uploads/2018/08/overlay_FF.png"/>
+        </div>
+        
+    </body>
+</html>
+
